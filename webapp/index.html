@@ -40,16 +40,16 @@
   input{font-family:inherit; color:inherit;}
   a{color:inherit;}
   ::-webkit-scrollbar{display:none;}
-
+ 
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
   }
-
+ 
   button:focus-visible, input:focus-visible{
     outline:2px solid var(--amber);
     outline-offset:2px;
   }
-
+ 
   /* ─── Тикерная лента (signature element) ─── */
   .ticker-wrap{
     background:var(--panel);
@@ -75,35 +75,50 @@
   .ticker-item .val{color:var(--text); font-weight:600;}
   .ticker-item .chg.up{color:var(--gain);}
   .ticker-item .chg.down{color:var(--loss);}
-
+ 
   main{padding:18px 16px 24px;}
   .screen{display:none;}
   .screen.active{display:block; animation:fade-in .25s ease;}
   @keyframes fade-in{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
-
+  @keyframes card-in{from{opacity:0; transform:translateY(10px) scale(0.98);} to{opacity:1; transform:translateY(0) scale(1);}}
+  @keyframes pulse-dot{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.4; transform:scale(0.7);}}
+  @keyframes glow-pulse{0%,100%{box-shadow:0 8px 20px rgba(232,162,61,0.35);} 50%{box-shadow:0 8px 28px rgba(232,162,61,0.6);}}
+  button, .chip, .toggle-btn, .coin-row, .tab-btn, .del-btn, .star-btn{
+    transition:transform .12s ease, background .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
+  }
+  button:active, .chip:active, .toggle-btn:active, .del-btn:active, .star-btn:active{transform:scale(0.94);}
+ 
   h1{font-size:1.3rem; font-weight:700; margin-bottom:4px;}
   .subtitle{color:var(--text-muted); font-size:0.86rem; margin-bottom:18px;}
-
+ 
   .card{
     background:var(--panel);
     border:1px solid var(--border);
     border-radius:14px;
     padding:18px;
     margin-bottom:14px;
+    transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
   }
-
+  @media (hover:hover){
+    .card:hover{border-color:var(--border-strong); transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,0.25);}
+  }
+ 
   /* ─── Movers row ─── */
   .movers-row{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;}
   .mover-card{
     background:var(--panel); border:1px solid var(--border); border-radius:14px;
-    padding:14px;
+    padding:14px; transition:border-color .2s ease, transform .15s ease;
+    animation:card-in .4s ease backwards;
   }
+  .mover-card:active{transform:scale(0.97);}
+  .mover-card.gain{border-color:rgba(111,207,143,0.25);}
+  .mover-card.loss{border-color:rgba(225,96,79,0.25);}
   .mover-card .label{font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;}
   .mover-card .sym{font-weight:700; font-size:1.05rem; margin-bottom:2px;}
   .mover-card .chg{font-family:'JetBrains Mono', monospace; font-size:0.95rem; font-weight:600;}
   .mover-card.gain .chg{color:var(--gain);}
   .mover-card.loss .chg{color:var(--loss);}
-
+ 
   /* ─── Market list ─── */
   .section-title{
     font-size:0.78rem; color:var(--text-muted); text-transform:uppercase;
@@ -113,7 +128,10 @@
     display:flex; align-items:center; gap:12px;
     padding:13px 4px; border-bottom:1px solid var(--border);
     cursor:pointer;
+    animation:card-in .35s ease backwards;
+    transition:background .15s ease;
   }
+  .coin-row:active{background:var(--panel-2);}
   .coin-row:last-child{border-bottom:none;}
   .star-btn{
     width:22px; height:22px; flex-shrink:0; color:var(--text-muted);
@@ -134,7 +152,7 @@
   }
   .chart-panel.open{max-height:180px; padding:10px 0 6px;}
   .chart-panel canvas{max-height:150px;}
-
+ 
   /* ─── Portfolio ─── */
   .total-value{
     font-family:'JetBrains Mono', monospace; font-weight:700; font-size:2.1rem;
@@ -148,10 +166,11 @@
   .legend-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
   .legend-item .sym{font-weight:600; margin-right:auto;}
   .legend-item .pct{font-family:'JetBrains Mono', monospace; color:var(--text-muted);}
-
+ 
   .item-row{
     display:flex; align-items:center; justify-content:space-between;
     padding:13px 0; border-bottom:1px solid var(--border);
+    animation:card-in .35s ease backwards;
   }
   .item-row:last-child{border-bottom:none;}
   .item-row .left .sym{font-weight:600; font-size:0.95rem;}
@@ -165,23 +184,26 @@
   }
   .del-btn svg{width:14px; height:14px;}
   .del-btn:hover{color:var(--loss);}
-
+ 
   .empty-state{
     text-align:center; padding:36px 16px; color:var(--text-muted);
   }
   .empty-state .big-icon{width:40px; height:40px; margin:0 auto 14px; opacity:0.5;}
   .empty-state p{font-size:0.9rem; margin-bottom:16px;}
-
+ 
   .fab{
     position:fixed; right:18px; bottom:96px; z-index:20;
     width:52px; height:52px; border-radius:16px;
-    background:var(--amber); color:var(--ink);
+    background:var(--ink); color:var(--amber);
+    border:1.5px solid var(--amber);
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 8px 20px rgba(232,162,61,0.35);
+    animation:glow-pulse 2.6s ease-in-out infinite;
   }
+  .fab:active{transform:scale(0.92);}
   .fab svg{width:22px; height:22px;}
   .fab.hidden{display:none;}
-
+ 
   /* ─── Sheet (bottom modal) ─── */
   .sheet-backdrop{
     position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:40;
@@ -198,43 +220,56 @@
   .sheet.open{transform:translateY(0);}
   .sheet-handle{width:36px; height:4px; background:var(--border-strong); border-radius:2px; margin:0 auto 16px;}
   .sheet h3{font-size:1.05rem; margin-bottom:16px;}
-
+ 
   .chip-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
   .chip{
-    padding:9px 14px; border-radius:10px; background:var(--panel-2);
+    padding:9px 14px; border-radius:10px; background:transparent;
     border:1px solid var(--border); font-size:0.86rem; font-weight:500;
     color:var(--text-muted);
   }
-  .chip.selected{background:var(--amber-dim); border-color:var(--amber); color:var(--amber);}
-
+  .chip.selected{
+    background:var(--amber-dim); border-color:var(--amber); color:var(--amber);
+    box-shadow:0 0 0 1px var(--amber), 0 0 14px rgba(232,162,61,0.35);
+  }
+ 
   .field-label{font-size:0.78rem; color:var(--text-muted); margin-bottom:8px; display:block;}
   .text-input{
     width:100%; background:var(--panel-2); border:1px solid var(--border);
     border-radius:10px; padding:13px 14px; font-size:1rem; margin-bottom:16px;
     font-family:'JetBrains Mono', monospace;
+    transition:border-color .15s ease, box-shadow .15s ease;
   }
-  .text-input:focus{border-color:var(--amber);}
-
+  .text-input:focus{border-color:var(--amber); box-shadow:0 0 0 3px var(--amber-dim);}
+ 
   .toggle-row{display:flex; gap:8px; margin-bottom:20px;}
   .toggle-btn{
-    flex:1; padding:12px; border-radius:10px; background:var(--panel-2);
+    flex:1; padding:12px; border-radius:10px; background:transparent;
     border:1px solid var(--border); font-size:0.88rem; font-weight:600;
     color:var(--text-muted); display:flex; align-items:center; justify-content:center; gap:6px;
   }
-  .toggle-btn.selected.above{background:var(--gain-dim); border-color:var(--gain); color:var(--gain);}
-  .toggle-btn.selected.below{background:var(--loss-dim); border-color:var(--loss); color:var(--loss);}
-
+  .toggle-btn.selected.above{
+    background:var(--gain-dim); border-color:var(--gain); color:var(--gain);
+    box-shadow:0 0 0 1px var(--gain), 0 0 14px rgba(111,207,143,0.3);
+  }
+  .toggle-btn.selected.below{
+    background:var(--loss-dim); border-color:var(--loss); color:var(--loss);
+    box-shadow:0 0 0 1px var(--loss), 0 0 14px rgba(225,96,79,0.3);
+  }
+ 
   .btn-primary{
     width:100%; padding:15px; border-radius:12px;
-    background:var(--amber); color:var(--ink); font-weight:700; font-size:0.98rem;
+    background:transparent; color:var(--amber); font-weight:700; font-size:0.98rem;
+    border:1.5px solid var(--amber);
+    box-shadow:0 0 16px rgba(232,162,61,0.18);
   }
+  .btn-primary:active{background:var(--amber-dim); box-shadow:0 0 22px rgba(232,162,61,0.4);}
   .btn-primary:disabled{opacity:0.45;}
   .btn-secondary{
     width:100%; padding:15px; border-radius:12px; margin-top:10px;
-    background:var(--panel-2); color:var(--text); font-weight:600; font-size:0.95rem;
+    background:transparent; color:var(--text); font-weight:600; font-size:0.95rem;
     border:1px solid var(--border);
   }
-
+ 
   /* ─── Calculator ─── */
   .calc-result{margin-top:18px;}
   .calc-row{
@@ -247,7 +282,7 @@
   .limit-note{
     text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:14px;
   }
-
+ 
   /* ─── Premium ─── */
   .premium-hero{
     background:linear-gradient(155deg, var(--amber-dim), transparent 60%);
@@ -287,7 +322,7 @@
     background:var(--gain-dim); color:var(--gain); padding:6px 12px;
     border-radius:8px; font-size:0.82rem; font-weight:600; margin-bottom:8px;
   }
-
+ 
   /* ─── Loading / toast ─── */
   .spinner{
     width:22px; height:22px; border-radius:50%;
@@ -302,7 +337,7 @@
     opacity:0; transition:all .25s ease; pointer-events:none; max-width:88%;
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
-
+ 
   /* ─── Bottom tab bar ─── */
   .tabbar{
     position:fixed; left:0; right:0; bottom:0; z-index:50;
@@ -312,45 +347,69 @@
   .tab-btn{
     flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
     padding:8px 2px; color:var(--text-muted); border-radius:10px;
+    position:relative;
   }
-  .tab-btn svg{width:21px; height:21px;}
+  .tab-btn svg{width:21px; height:21px; transition:transform .2s ease;}
   .tab-btn span{font-size:0.66rem; font-weight:600;}
   .tab-btn.active{color:var(--amber);}
+  .tab-btn.active svg{transform:translateY(-1px);}
+  .tab-btn.active::before{
+    content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:22px; height:2px; border-radius:2px; background:var(--amber);
+    box-shadow:0 0 8px var(--amber);
+    animation:tab-indicator .2s ease;
+  }
+  @keyframes tab-indicator{from{width:0; opacity:0;} to{width:22px; opacity:1;}}
+ 
+  .coin-row:nth-child(1),.item-row:nth-child(1),.mover-card:nth-child(1){animation-delay:0s;}
+  .coin-row:nth-child(2),.item-row:nth-child(2),.mover-card:nth-child(2){animation-delay:.04s;}
+  .coin-row:nth-child(3),.item-row:nth-child(3){animation-delay:.08s;}
+  .coin-row:nth-child(4),.item-row:nth-child(4){animation-delay:.12s;}
+  .coin-row:nth-child(5),.item-row:nth-child(5){animation-delay:.16s;}
+  .coin-row:nth-child(6),.item-row:nth-child(6){animation-delay:.2s;}
+  .coin-row:nth-child(n+7),.item-row:nth-child(n+7){animation-delay:.24s;}
+ 
+  .live-dot{
+    display:inline-block; width:7px; height:7px; border-radius:50%;
+    background:var(--gain); margin-right:6px; vertical-align:middle;
+    animation:pulse-dot 1.6s ease-in-out infinite;
+    box-shadow:0 0 6px var(--gain);
+  }
 </style>
 </head>
 <body>
-
+ 
 <div class="ticker-wrap">
   <div class="ticker-track" id="tickerTrack"></div>
 </div>
-
+ 
 <main>
-
+ 
   <!-- ─── DASHBOARD ─── -->
   <section class="screen active" id="screen-dashboard">
     <h1 id="dashGreeting">Рынок</h1>
-    <p class="subtitle" id="dashSubtitle">Курсы обновляются каждые 30 секунд</p>
-
+    <p class="subtitle" id="dashSubtitle"><span class="live-dot"></span>Курсы обновляются каждые 30 секунд</p>
+ 
     <div class="movers-row" id="moversRow"></div>
-
+ 
     <div class="section-title">Все монеты</div>
     <div class="card" id="marketList" style="padding:4px 14px;"></div>
   </section>
-
+ 
   <!-- ─── PORTFOLIO ─── -->
   <section class="screen" id="screen-portfolio">
     <h1>Портфель</h1>
     <p class="subtitle">Стоимость активов по текущему курсу</p>
     <div id="portfolioContent"></div>
   </section>
-
+ 
   <!-- ─── ALERTS ─── -->
   <section class="screen" id="screen-alerts">
     <h1>Уведомления</h1>
     <p class="subtitle">Сообщим, когда цена достигнет цели</p>
     <div id="alertsContent"></div>
   </section>
-
+ 
   <!-- ─── CALCULATOR ─── -->
   <section class="screen" id="screen-calc">
     <h1>Калькулятор</h1>
@@ -365,24 +424,24 @@
       <div class="limit-note" id="calcLimitNote"></div>
     </div>
   </section>
-
+ 
   <!-- ─── PREMIUM ─── -->
   <section class="screen" id="screen-premium">
     <h1>Premium</h1>
     <p class="subtitle">Без ограничений на алерты, портфель и расчёты</p>
     <div id="premiumContent"></div>
   </section>
-
+ 
 </main>
-
+ 
 <button class="fab" id="fabAdd">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
 </button>
-
+ 
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
 <div class="sheet" id="sheet"></div>
 <div class="toast" id="toast"></div>
-
+ 
 <nav class="tabbar">
   <button class="tab-btn active" data-screen="dashboard">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M12 19V5M20 19v-7"/></svg>
@@ -405,7 +464,7 @@
     <span>Premium</span>
   </button>
 </nav>
-
+ 
 <script>
 const tg = window.Telegram?.WebApp;
 if (tg) {
@@ -417,7 +476,7 @@ if (tg) {
   } catch(e) {}
 }
 const INIT_DATA = tg?.initData || '';
-
+ 
 const CSS = getComputedStyle(document.documentElement);
 const COLOR = {
   amber: CSS.getPropertyValue('--amber').trim(),
@@ -428,7 +487,7 @@ const COLOR = {
   panel2: CSS.getPropertyValue('--panel-2').trim(),
   border: CSS.getPropertyValue('--border').trim(),
 };
-
+ 
 let STATE = {
   lang: 'ru',
   isPremium: false,
@@ -441,7 +500,7 @@ let STATE = {
   alerts: [],
   openChart: null,
 };
-
+ 
 // ─── Утилиты ───
 function fmtUsd(v){
   return '$' + Number(v).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
@@ -455,7 +514,7 @@ function showToast(msg){
   el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'), 2600);
 }
-
+ 
 async function api(path, opts={}){
   const res = await fetch(path, {
     ...opts,
@@ -471,7 +530,7 @@ async function api(path, opts={}){
   }
   return data;
 }
-
+ 
 // ─── Иконки ───
 const ICONS = {
   star: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9L5.7 21l1.7-7L2 9.2l7.1-.6L12 2z"/></svg>',
@@ -481,7 +540,7 @@ const ICONS = {
   empty: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 11h18M8 3v4M16 3v4"/></svg>',
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
 };
-
+ 
 // ─── Табы ───
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>switchScreen(btn.dataset.screen));
@@ -498,7 +557,7 @@ function switchScreen(name){
   if (name === 'premium') renderPremium();
   tg?.HapticFeedback?.selectionChanged();
 }
-
+ 
 // ─── Тикерная лента ───
 function renderTicker(){
   const items = STATE.coins.map(sym=>{
@@ -514,7 +573,7 @@ function renderTicker(){
   }).join('');
   document.getElementById('tickerTrack').innerHTML = items + items; // дублируем для бесшовной прокрутки
 }
-
+ 
 // ─── Dashboard: movers + market list ───
 function renderMovers(){
   const arr = STATE.coins.map(sym=>({sym, ...STATE.prices[sym]})).filter(c=>c.usd !== undefined);
@@ -529,7 +588,7 @@ function renderMovers(){
     </div>`;
   document.getElementById('moversRow').innerHTML = card(top,'gain','Лидер роста') + card(worst,'loss','Лидер падения');
 }
-
+ 
 function renderMarketList(){
   const sorted = [...STATE.coins].sort((a,b)=>{
     const aw = STATE.watchlist.has(a) ? 0 : 1;
@@ -558,7 +617,7 @@ function renderMarketList(){
     </div>`;
   }).join('');
   document.getElementById('marketList').innerHTML = html;
-
+ 
   document.querySelectorAll('[data-star]').forEach(btn=>{
     btn.addEventListener('click', async (e)=>{
       e.stopPropagation();
@@ -574,19 +633,19 @@ function renderMarketList(){
       renderMarketList();
     });
   });
-
+ 
   document.querySelectorAll('.coin-row').forEach(row=>{
     row.addEventListener('click', ()=>toggleChart(row.dataset.sym));
   });
-
+ 
   if (STATE.openChart) drawChart(STATE.openChart);
 }
-
+ 
 async function toggleChart(sym){
   STATE.openChart = STATE.openChart === sym ? null : sym;
   renderMarketList();
 }
-
+ 
 let chartInstances = {};
 async function drawChart(sym){
   try{
@@ -610,7 +669,7 @@ async function drawChart(sym){
     });
   }catch(e){ /* тихо игнорируем — не критично */ }
 }
-
+ 
 // ─── Portfolio ───
 let donutChart = null;
 async function renderPortfolio(){
@@ -673,7 +732,7 @@ async function renderPortfolio(){
     el.innerHTML = `<div class="empty-state"><p>Не получилось загрузить портфель.</p></div>`;
   }
 }
-
+ 
 // ─── Alerts ───
 async function renderAlerts(){
   const el = document.getElementById('alertsContent');
@@ -713,7 +772,7 @@ async function renderAlerts(){
     el.innerHTML = `<div class="empty-state"><p>Не получилось загрузить алерты.</p></div>`;
   }
 }
-
+ 
 // ─── Calculator ───
 let calcSelectedCoin = null;
 function renderCalcChips(){
@@ -750,7 +809,7 @@ document.getElementById('calcSubmit').addEventListener('click', async ()=>{
 function switchToPremiumHint(){
   setTimeout(()=>switchScreen('premium'), 900);
 }
-
+ 
 // ─── Premium ───
 async function renderPremium(){
   const el = document.getElementById('premiumContent');
@@ -761,7 +820,7 @@ async function renderPremium(){
       <div class="feature-item"><span class="check">${ICONS.check}</span> Безлимитные расчёты в калькуляторе</div>
       <div class="feature-item"><span class="check">${ICONS.check}</span> Приоритетная поддержка</div>
     </div>`;
-
+ 
   if (STATE.isPremium){
     el.innerHTML = `
       <div class="premium-hero">
@@ -774,7 +833,7 @@ async function renderPremium(){
     renderReferralCard();
     return;
   }
-
+ 
   el.innerHTML = `
     <div class="premium-hero">
       <div class="gem">${ICONS.check}</div>
@@ -787,7 +846,7 @@ async function renderPremium(){
   document.getElementById('buyPremiumBtn').addEventListener('click', buyPremium);
   renderReferralCard();
 }
-
+ 
 async function renderReferralCard(){
   const holder = document.getElementById('referralCard');
   if (!holder) return;
@@ -811,7 +870,7 @@ async function renderReferralCard(){
     });
   }catch(e){ /* тихо игнорируем, если не удалось получить ссылку */ }
 }
-
+ 
 async function buyPremium(){
   try{
     const data = await api('/api/premium/create-invoice', {method:'POST'});
@@ -836,14 +895,14 @@ async function buyPremium(){
     });
   }catch(e){ showToast(e.message); }
 }
-
+ 
 // ─── FAB (добавление в портфель/алерты) ───
 document.getElementById('fabAdd').addEventListener('click', ()=>{
   const target = document.getElementById('fabAdd').dataset.for;
   if (target === 'portfolio') openAddPortfolioSheet();
   if (target === 'alerts') openAddAlertSheet();
 });
-
+ 
 function openSheet(html){
   document.getElementById('sheet').innerHTML = `<div class="sheet-handle"></div>` + html;
   document.getElementById('sheet').classList.add('open');
@@ -854,7 +913,7 @@ function closeSheet(){
   document.getElementById('sheetBackdrop').classList.remove('open');
 }
 document.getElementById('sheetBackdrop').addEventListener('click', closeSheet);
-
+ 
 function openAddPortfolioSheet(){
   let selected = null;
   openSheet(`
@@ -888,7 +947,7 @@ function openAddPortfolioSheet(){
     }
   });
 }
-
+ 
 function openAddAlertSheet(){
   let selected = null, direction = null, kind = 'price';
   openSheet(`
@@ -972,7 +1031,7 @@ function openAddAlertSheet(){
     }
   });
 }
-
+ 
 // ─── Инициализация ───
 async function init(){
   try{
@@ -982,18 +1041,18 @@ async function init(){
     STATE.premiumDaysLeft = initData.premium_days_left;
     STATE.coins = initData.coins;
     STATE.coinDisplay = initData.coin_display;
-
+ 
     const watchlistData = await api('/api/watchlist');
     STATE.watchlist = new Set(watchlistData.items.map(i=>i.coin));
-
+ 
     const prices = await api('/api/prices');
     STATE.prices = prices;
-
+ 
     renderTicker();
     renderMovers();
     renderMarketList();
     renderCalcChips();
-
+ 
     setInterval(async ()=>{
       try{
         STATE.prices = await api('/api/prices');
