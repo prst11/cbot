@@ -11,26 +11,32 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0F1620;
-    --panel:#161F2C;
-    --panel-2:#1D2836;
-    --border: rgba(237,234,226,0.08);
-    --border-strong: rgba(237,234,226,0.16);
+    --ink:#0B0F16;
+    --panel: rgba(28,38,54,0.55);
+    --panel-2: rgba(36,48,66,0.5);
+    --border: rgba(237,234,226,0.10);
+    --border-strong: rgba(237,234,226,0.22);
     --text:#EDEAE2;
     --text-muted: rgba(237,234,226,0.58);
     --amber:#E8A23D;
-    --amber-dim: rgba(232,162,61,0.14);
+    --amber-dim: rgba(232,162,61,0.16);
     --teal:#4FB3A9;
     --gain:#6FCF8F;
-    --gain-dim: rgba(111,207,143,0.14);
+    --gain-dim: rgba(111,207,143,0.16);
     --loss:#E1604F;
-    --loss-dim: rgba(225,96,79,0.14);
+    --loss-dim: rgba(225,96,79,0.16);
+    --glass-blur: blur(22px) saturate(160%);
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
     font-family:'Sora', sans-serif;
-    background:var(--ink);
+    background:
+      radial-gradient(ellipse 520px 420px at 8% -6%, rgba(232,162,61,0.22), transparent 60%),
+      radial-gradient(ellipse 480px 420px at 96% 18%, rgba(79,179,169,0.18), transparent 60%),
+      radial-gradient(ellipse 560px 480px at 12% 78%, rgba(111,143,207,0.14), transparent 60%),
+      var(--ink);
+    background-attachment:fixed;
     color:var(--text);
     overscroll-behavior-y:none;
     padding-bottom:78px;
@@ -53,6 +59,7 @@
   /* ─── Тикерная лента (signature element) ─── */
   .ticker-wrap{
     background:var(--panel);
+    backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
     border-bottom:1px solid var(--border);
     overflow:hidden;
     padding:10px 0;
@@ -93,20 +100,24 @@
 
   .card{
     background:var(--panel);
+    backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
     border:1px solid var(--border);
-    border-radius:14px;
+    border-radius:16px;
     padding:18px;
     margin-bottom:14px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 20px rgba(0,0,0,0.18);
     transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
   }
   @media (hover:hover){
-    .card:hover{border-color:var(--border-strong); transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,0.25);}
+    .card:hover{border-color:var(--border-strong); transform:translateY(-2px); box-shadow:inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 28px rgba(0,0,0,0.3);}
   }
 
   /* ─── Movers row ─── */
   .movers-row{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;}
   .mover-card{
-    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    background:var(--panel); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    border:1px solid var(--border); border-radius:16px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);
     padding:14px; transition:border-color .2s ease, transform .15s ease;
     animation:card-in .4s ease backwards;
   }
@@ -177,6 +188,50 @@
   .item-row .left .sub{color:var(--text-muted); font-size:0.78rem; margin-top:2px; font-family:'JetBrains Mono', monospace;}
   .item-row .right{text-align:right; display:flex; align-items:center; gap:12px;}
   .item-row .val{font-family:'JetBrains Mono', monospace; font-weight:600;}
+
+  /* ─── Свайп для удаления (портфель, алерты) ─── */
+  .item-row.swipeable{
+    position:relative; overflow:hidden; padding:0; display:block;
+  }
+  .swipe-content{
+    position:relative; z-index:2;
+    background:rgba(14,20,29,0.86);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:13px 4px;
+    touch-action:pan-y;
+    will-change:transform;
+  }
+  .swipe-delete-bg{
+    position:absolute; top:0; right:0; bottom:0; width:76px; z-index:1;
+    background:var(--loss); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .swipe-delete-bg svg{width:19px; height:19px;}
+
+  /* ─── Переключатель валюты ─── */
+  .dash-head-row{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .currency-switch{
+    display:flex; gap:2px; padding:3px; border-radius:10px; flex-shrink:0;
+    background:var(--panel-2); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    border:1px solid var(--border);
+  }
+  .cur-btn{
+    width:30px; height:30px; border-radius:7px; font-size:0.86rem; font-weight:700;
+    color:var(--text-muted);
+  }
+  .cur-btn.active{background:var(--amber); color:var(--ink);}
+
+  /* ─── Новости ─── */
+  .news-card{
+    display:flex; gap:12px; padding:14px; margin-bottom:10px;
+    background:var(--panel); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    border:1px solid var(--border); border-radius:14px;
+    animation:card-in .35s ease backwards;
+  }
+  .news-card img{width:56px; height:56px; border-radius:10px; object-fit:cover; flex-shrink:0; background:var(--panel-2);}
+  .news-card .body{min-width:0;}
+  .news-card .title{font-size:0.88rem; font-weight:600; line-height:1.3; margin-bottom:6px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .news-card .meta{font-size:0.74rem; color:var(--text-muted);}
   .del-btn{
     width:28px; height:28px; border-radius:8px; background:var(--panel-2);
     display:flex; align-items:center; justify-content:center; color:var(--text-muted);
@@ -212,7 +267,9 @@
   .sheet-backdrop.open{opacity:1; pointer-events:auto;}
   .sheet{
     position:fixed; left:0; right:0; bottom:0; z-index:41;
-    background:var(--panel); border-radius:20px 20px 0 0;
+    background:var(--panel); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    border:1px solid var(--border); border-bottom:none;
+    border-radius:22px 22px 0 0;
     padding:20px 18px calc(20px + env(safe-area-inset-bottom));
     transform:translateY(100%); transition:transform .25s ease;
     max-height:80vh; overflow-y:auto;
@@ -223,7 +280,7 @@
 
   .chip-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
   .chip{
-    padding:9px 14px; border-radius:10px; background:transparent;
+    padding:9px 14px; border-radius:10px; background:rgba(255,255,255,0.03);
     border:1px solid var(--border); font-size:0.86rem; font-weight:500;
     color:var(--text-muted);
   }
@@ -341,7 +398,8 @@
   /* ─── Bottom tab bar ─── */
   .tabbar{
     position:fixed; left:0; right:0; bottom:0; z-index:50;
-    background:var(--panel); border-top:1px solid var(--border);
+    background:var(--panel); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    border-top:1px solid var(--border);
     display:flex; padding:6px 4px calc(6px + env(safe-area-inset-bottom));
   }
   .tab-btn{
@@ -350,6 +408,15 @@
     position:relative;
   }
   .tab-btn svg{width:21px; height:21px; transition:transform .2s ease;}
+  .tab-icon-wrap{position:relative; display:inline-flex;}
+  .tab-badge{
+    position:absolute; top:-5px; right:-8px;
+    min-width:15px; height:15px; padding:0 3px; border-radius:8px;
+    background:var(--loss); color:#fff; font-size:0.62rem; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 2px var(--ink);
+  }
+  .tab-badge.hidden{display:none;}
   .tab-btn span{font-size:0.66rem; font-weight:600;}
   .tab-btn.active{color:var(--amber);}
   .tab-btn.active svg{transform:translateY(-1px);}
@@ -380,7 +447,8 @@
   .admin-fab{
     position:fixed; top:calc(10px + env(safe-area-inset-top)); right:14px; z-index:30;
     width:36px; height:36px; border-radius:50%;
-    background:var(--panel); border:1px solid var(--border-strong);
+    background:var(--panel); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    border:1px solid var(--border-strong);
     color:var(--amber);
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 4px 14px rgba(0,0,0,0.3);
@@ -391,7 +459,8 @@
 
   .admin-stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
   .admin-stat-card{
-    background:var(--panel-2); border:1px solid var(--border); border-radius:12px; padding:14px;
+    background:var(--panel-2); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    border:1px solid var(--border); border-radius:12px; padding:14px;
   }
   .admin-stat-card .num{font-family:'JetBrains Mono', monospace; font-weight:700; font-size:1.4rem; color:var(--amber);}
   .admin-stat-card .lbl{font-size:0.76rem; color:var(--text-muted); margin-top:2px;}
@@ -442,13 +511,25 @@
 
   <!-- ─── DASHBOARD ─── -->
   <section class="screen active" id="screen-dashboard">
-    <h1 id="dashGreeting">Рынок</h1>
-    <p class="subtitle" id="dashSubtitle"><span class="live-dot"></span>Курсы обновляются каждые 30 секунд</p>
+    <div class="dash-head-row">
+      <div>
+        <h1 id="dashGreeting">Рынок</h1>
+        <p class="subtitle" id="dashSubtitle"><span class="live-dot"></span>Курсы обновляются каждые 30 секунд</p>
+      </div>
+      <div class="currency-switch" id="currencySwitch">
+        <button data-cur="usd" class="cur-btn">$</button>
+        <button data-cur="uah" class="cur-btn">₴</button>
+        <button data-cur="eur" class="cur-btn">€</button>
+      </div>
+    </div>
 
     <div class="movers-row" id="moversRow"></div>
 
     <div class="section-title">Все монеты</div>
     <div class="card" id="marketList" style="padding:4px 14px;"></div>
+
+    <div class="section-title">Новости</div>
+    <div id="newsList"><div class="spinner"></div></div>
   </section>
 
   <!-- ─── PORTFOLIO ─── -->
@@ -507,7 +588,10 @@
     <span>Портфель</span>
   </button>
   <button class="tab-btn" data-screen="alerts">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+    <span class="tab-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+      <span class="tab-badge hidden" id="alertsBadge">0</span>
+    </span>
     <span>Алерты</span>
   </button>
   <button class="tab-btn" data-screen="calc">
@@ -545,6 +629,7 @@ const COLOR = {
 
 let STATE = {
   lang: 'ru',
+  currency: 'usd',
   isPremium: false,
   premiumDaysLeft: 0,
   coins: [],
@@ -556,9 +641,17 @@ let STATE = {
   openChart: null,
 };
 
+const CURRENCY_SYMBOLS = {usd:'$', uah:'₴', eur:'€'};
+const CURRENCY_LABELS = {usd:'USD', uah:'UAH', eur:'EUR'};
+
 // ─── Утилиты ───
 function fmtUsd(v){
   return '$' + Number(v).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function fmtCur(v, currency){
+  const cur = currency || STATE.currency;
+  const sym = CURRENCY_SYMBOLS[cur] || '$';
+  return sym + Number(v).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 }
 function fmtNum(v, d=6){
   return Number(v).toLocaleString('en-US', {maximumFractionDigits:d});
@@ -608,7 +701,11 @@ function switchScreen(name){
   document.getElementById('fabAdd').classList.toggle('hidden', !['portfolio','alerts'].includes(name));
   document.getElementById('fabAdd').dataset.for = name;
   if (name === 'portfolio') renderPortfolio();
-  if (name === 'alerts') renderAlerts();
+  if (name === 'alerts'){
+    renderAlerts();
+    updateAlertsBadge(0);
+    api('/api/alerts/mark_seen', {method:'POST'}).catch(()=>{});
+  }
   if (name === 'premium') renderPremium();
   tg?.HapticFeedback?.selectionChanged();
 }
@@ -622,7 +719,7 @@ function renderTicker(){
     const arrow = p.change_24h >= 0 ? '▲' : '▼';
     return `<div class="ticker-item">
       <span class="sym">${STATE.coinDisplay[sym]||sym}</span>
-      <span class="val">${fmtUsd(p.usd)}</span>
+      <span class="val">${fmtCur(p[STATE.currency])}</span>
       <span class="chg ${dir}">${arrow} ${Math.abs(p.change_24h).toFixed(2)}%</span>
     </div>`;
   }).join('');
@@ -663,7 +760,7 @@ function renderMarketList(){
           <div class="sym">${STATE.coinDisplay[sym]||sym}</div>
         </div>
         <div class="coin-price-block">
-          <div class="price mono">${p.usd!==undefined?fmtUsd(p.usd):'—'}</div>
+          <div class="price mono">${p[STATE.currency]!==undefined?fmtCur(p[STATE.currency]):'—'}</div>
           <div class="chg ${dir}">${p.change_24h!==undefined?((p.change_24h>=0?'+':'')+p.change_24h.toFixed(2)+'%'):''}</div>
         </div>
         <div class="chevron ${isOpen?'open':''}">${ICONS.chevron}</div>
@@ -727,6 +824,63 @@ async function drawChart(sym){
 
 // ─── Portfolio ───
 let donutChart = null;
+// ─── Свайп для удаления ───
+function initSwipeToDelete(container){
+  const REVEAL = 76;
+  container.querySelectorAll('.swipeable').forEach(row=>{
+    const content = row.querySelector('.swipe-content');
+    if (!content) return;
+    let startX = 0, currentX = 0, dragging = false, opened = false;
+
+    content.addEventListener('pointerdown', (e)=>{
+      dragging = true;
+      startX = e.clientX;
+      content.style.transition = 'none';
+      try{ content.setPointerCapture(e.pointerId); }catch(_){}
+    });
+    content.addEventListener('pointermove', (e)=>{
+      if (!dragging) return;
+      let delta = (e.clientX - startX) + (opened ? -REVEAL : 0);
+      delta = Math.min(0, Math.max(-REVEAL, delta));
+      currentX = delta;
+      content.style.transform = `translateX(${delta}px)`;
+    });
+    const endDrag = ()=>{
+      if (!dragging) return;
+      dragging = false;
+      content.style.transition = 'transform .2s ease';
+      if (currentX < -REVEAL/2){
+        content.style.transform = `translateX(-${REVEAL}px)`;
+        opened = true;
+        tg?.HapticFeedback?.impactOccurred('light');
+      } else {
+        content.style.transform = 'translateX(0)';
+        opened = false;
+      }
+    };
+    content.addEventListener('pointerup', endDrag);
+    content.addEventListener('pointercancel', endDrag);
+  });
+
+  container.querySelectorAll('.swipe-delete-bg').forEach(bg=>{
+    bg.addEventListener('click', async ()=>{
+      const row = bg.closest('.swipeable');
+      const kind = row.dataset.kind;
+      const id = row.dataset.itemId;
+      tg?.HapticFeedback?.impactOccurred('medium');
+      try{
+        if (kind === 'portfolio'){
+          await api('/api/portfolio/'+id, {method:'DELETE'});
+          renderPortfolio();
+        } else if (kind === 'alert'){
+          await api('/api/alerts/'+id, {method:'DELETE'});
+          renderAlerts();
+        }
+      }catch(e){ showToast(e.message); }
+    });
+  });
+}
+
 async function renderPortfolio(){
   const el = document.getElementById('portfolioContent');
   el.innerHTML = '<div class="spinner"></div>';
@@ -749,20 +903,23 @@ async function renderPortfolio(){
         <span class="pct">${data.total_value? ((it.value/data.total_value)*100).toFixed(1):'0'}%</span>
       </div>`).join('');
     const rows = data.items.map(it=>`
-      <div class="item-row">
-        <div class="left">
-          <div class="sym">${it.display}</div>
-          <div class="sub">${fmtNum(it.amount)} · ${it.change_24h>=0?'+':''}${it.change_24h.toFixed(2)}%</div>
+      <div class="item-row swipeable" data-item-id="${it.id}" data-kind="portfolio">
+        <div class="swipe-content">
+          <div class="left">
+            <div class="sym">${it.display}</div>
+            <div class="sub">${fmtNum(it.amount)} · ${it.change_24h>=0?'+':''}${it.change_24h.toFixed(2)}%</div>
+          </div>
+          <div class="right">
+            <span class="val">${fmtCur(it.value, data.currency)}</span>
+            <button class="del-btn" data-del-portfolio="${it.id}">${ICONS.trash}</button>
+          </div>
         </div>
-        <div class="right">
-          <span class="val">${fmtUsd(it.value)}</span>
-          <button class="del-btn" data-del-portfolio="${it.id}">${ICONS.trash}</button>
-        </div>
+        <div class="swipe-delete-bg">${ICONS.trash}</div>
       </div>`).join('');
     el.innerHTML = `
       <div class="card">
         <div class="total-label">Общая стоимость</div>
-        <div class="total-value">${fmtUsd(data.total_value)}</div>
+        <div class="total-value">${fmtCur(data.total_value, data.currency)}</div>
         <div class="donut-wrap">
           <canvas id="donutCanvas"></canvas>
           <div class="legend">${legend}</div>
@@ -770,6 +927,7 @@ async function renderPortfolio(){
       </div>
       <div class="card" style="padding:4px 14px;">${rows}</div>
     `;
+    initSwipeToDelete(el);
     if (donutChart) donutChart.destroy();
     donutChart = new Chart(document.getElementById('donutCanvas'), {
       type:'doughnut',
@@ -804,18 +962,22 @@ async function renderAlerts(){
       return;
     }
     const rows = data.items.map(a=>`
-      <div class="item-row">
-        <div class="left">
-          <div class="sym">${a.display}</div>
-          <div class="sub">${a.kind === 'percent'
-            ? `📊 ${a.direction === 'above' ? 'рост' : 'падение'} на ${a.percent}% (цель ${fmtUsd(a.price)})`
-            : `${a.direction === 'above' ? 'выше' : 'ниже'} ${fmtUsd(a.price)}`}</div>
+      <div class="item-row swipeable" data-item-id="${a.id}" data-kind="alert">
+        <div class="swipe-content">
+          <div class="left">
+            <div class="sym">${a.display}</div>
+            <div class="sub">${a.kind === 'percent'
+              ? `📊 ${a.direction === 'above' ? 'рост' : 'падение'} на ${a.percent}% (цель ${fmtUsd(a.price)})`
+              : `${a.direction === 'above' ? 'выше' : 'ниже'} ${fmtUsd(a.price)}`}</div>
+          </div>
+          <div class="right">
+            <button class="del-btn" data-del-alert="${a.id}">${ICONS.trash}</button>
+          </div>
         </div>
-        <div class="right">
-          <button class="del-btn" data-del-alert="${a.id}">${ICONS.trash}</button>
-        </div>
+        <div class="swipe-delete-bg">${ICONS.trash}</div>
       </div>`).join('');
     el.innerHTML = `<div class="card" style="padding:4px 14px;">${rows}</div>`;
+    initSwipeToDelete(el);
     document.querySelectorAll('[data-del-alert]').forEach(btn=>{
       btn.addEventListener('click', async ()=>{
         await api('/api/alerts/'+btn.dataset.delAlert, {method:'DELETE'});
@@ -1134,6 +1296,7 @@ async function init(){
   try{
     const initData = await api('/api/init');
     STATE.lang = initData.lang;
+    STATE.currency = initData.currency || 'usd';
     STATE.isPremium = initData.is_premium;
     STATE.premiumDaysLeft = initData.premium_days_left;
     STATE.coins = initData.coins;
@@ -1150,6 +1313,10 @@ async function init(){
       setTimeout(showSurprise, 700);
     }
 
+    updateAlertsBadge(initData.unseen_alerts || 0);
+
+    initCurrencySwitch();
+
     const watchlistData = await api('/api/watchlist');
     STATE.watchlist = new Set(watchlistData.items.map(i=>i.coin));
 
@@ -1160,6 +1327,7 @@ async function init(){
     renderMovers();
     renderMarketList();
     renderCalcChips();
+    renderNews();
 
     setInterval(async ()=>{
       try{
@@ -1171,6 +1339,55 @@ async function init(){
     }, 30000);
   }catch(e){
     document.getElementById('marketList').innerHTML = `<div class="empty-state"><p>Не получилось загрузить данные. Перезайди в приложение через бота.</p></div>`;
+  }
+}
+
+// ─── Переключатель валюты ───
+function initCurrencySwitch(){
+  const wrap = document.getElementById('currencySwitch');
+  wrap.querySelectorAll('.cur-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.cur === STATE.currency);
+    btn.addEventListener('click', async ()=>{
+      if (btn.dataset.cur === STATE.currency) return;
+      STATE.currency = btn.dataset.cur;
+      wrap.querySelectorAll('.cur-btn').forEach(b=>b.classList.toggle('active', b===btn));
+      tg?.HapticFeedback?.selectionChanged();
+      renderTicker(); renderMovers(); renderMarketList();
+      if (document.getElementById('screen-portfolio').classList.contains('active')) renderPortfolio();
+      try{ await api('/api/currency', {method:'POST', body:JSON.stringify({currency:STATE.currency})}); }catch(e){}
+    });
+  });
+}
+
+// ─── Бейдж непрочитанных алертов ───
+function updateAlertsBadge(count){
+  const el = document.getElementById('alertsBadge');
+  el.textContent = count > 9 ? '9+' : count;
+  el.classList.toggle('hidden', count <= 0);
+}
+
+// ─── Новости ───
+async function renderNews(){
+  const el = document.getElementById('newsList');
+  try{
+    const data = await api('/api/news');
+    if (!data.items.length){
+      el.innerHTML = `<p style="color:var(--text-muted); font-size:0.86rem;">Новостей пока нет</p>`;
+      return;
+    }
+    el.innerHTML = data.items.map(n=>{
+      const date = n.published_at ? new Date(n.published_at*1000).toLocaleDateString('ru-RU', {day:'numeric', month:'short'}) : '';
+      return `
+      <a class="news-card" href="${n.url}" target="_blank" rel="noopener">
+        ${n.image ? `<img src="${n.image}" alt="" loading="lazy">` : ''}
+        <div class="body">
+          <div class="title">${n.title}</div>
+          <div class="meta">${n.source}${date ? ' · '+date : ''}</div>
+        </div>
+      </a>`;
+    }).join('');
+  }catch(e){
+    el.innerHTML = `<p style="color:var(--text-muted); font-size:0.86rem;">Не удалось загрузить новости</p>`;
   }
 }
 init();
