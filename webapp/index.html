@@ -27,6 +27,28 @@
     --loss-dim: rgba(225,96,79,0.16);
     --glass-blur: blur(22px) saturate(160%);
   }
+  [data-theme="light"]{
+    --ink:#F2EEE4;
+    --panel: rgba(255,255,255,0.55);
+    --panel-2: rgba(255,255,255,0.66);
+    --border: rgba(30,26,20,0.10);
+    --border-strong: rgba(30,26,20,0.22);
+    --text:#231F18;
+    --text-muted: rgba(35,31,24,0.6);
+    --amber-dim: rgba(232,162,61,0.24);
+    --gain-dim: rgba(111,207,143,0.24);
+    --loss-dim: rgba(225,96,79,0.22);
+  }
+  [data-theme="light"] body{
+    background:
+      radial-gradient(ellipse 520px 420px at 8% -6%, rgba(232,162,61,0.32), transparent 60%),
+      radial-gradient(ellipse 480px 420px at 96% 18%, rgba(79,179,169,0.26), transparent 60%),
+      radial-gradient(ellipse 560px 480px at 12% 78%, rgba(111,143,207,0.22), transparent 60%),
+      var(--ink);
+    background-attachment:fixed;
+  }
+  [data-theme="light"] .swipe-content{background:rgba(255,255,255,0.86);}
+  [data-theme="light"] .news-card img{background:var(--panel-2);}
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
@@ -220,6 +242,41 @@
     color:var(--text-muted);
   }
   .cur-btn.active{background:var(--amber); color:var(--ink);}
+
+  .plan-switch{
+    display:flex; gap:8px; margin-bottom:20px;
+  }
+  .plan-btn{
+    flex:1; padding:12px; border-radius:10px; background:var(--panel-2);
+    border:1px solid var(--border); font-size:0.9rem; font-weight:600;
+    color:var(--text-muted);
+    display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .plan-btn.active{
+    background:var(--amber-dim); border-color:var(--amber); color:var(--amber);
+    box-shadow:0 0 0 1px var(--amber), 0 0 14px rgba(232,162,61,0.3);
+  }
+  .save-badge{
+    background:var(--gain-dim); color:var(--gain); font-size:0.68rem; font-weight:700;
+    padding:2px 6px; border-radius:6px;
+  }
+
+  .suggest-hint{
+    font-size:0.78rem; color:var(--text-muted); margin:-8px 0 16px; min-height:16px;
+  }
+  .suggest-use-btn{
+    color:var(--amber); font-weight:700; text-decoration:underline; font-size:0.78rem;
+  }
+
+  .bucket-switch{display:flex; gap:8px; margin-bottom:16px;}
+  .bucket-btn{
+    flex:1; padding:10px; border-radius:10px; background:var(--panel-2);
+    border:1px solid var(--border); font-size:0.86rem; font-weight:600;
+    color:var(--text-muted);
+  }
+  .bucket-btn.active{
+    background:var(--amber-dim); border-color:var(--amber); color:var(--amber);
+  }
 
   /* ─── Новости ─── */
   .news-card{
@@ -457,6 +514,18 @@
   .admin-fab.hidden{display:none;}
   .admin-fab:active{transform:scale(0.92);}
 
+  .theme-fab{
+    position:fixed; top:calc(10px + env(safe-area-inset-top)); left:14px; z-index:30;
+    width:36px; height:36px; border-radius:50%;
+    background:var(--panel); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    border:1px solid var(--border-strong);
+    color:var(--amber);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 14px rgba(0,0,0,0.3);
+  }
+  .theme-fab svg{width:18px; height:18px;}
+  .theme-fab:active{transform:scale(0.92);}
+
   .admin-stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
   .admin-stat-card{
     background:var(--panel-2); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
@@ -501,6 +570,11 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
 </button>
 
+<button class="theme-fab" id="themeToggleBtn" title="Тема">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" id="themeIconMoon"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" id="themeIconSun" style="display:none;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+
 <div class="surprise-overlay hidden" id="surpriseOverlay">
   <div class="surprise-box">
     <img src="/assets/surprise.jpg" alt="">
@@ -536,6 +610,10 @@
   <section class="screen" id="screen-portfolio">
     <h1>Портфель</h1>
     <p class="subtitle">Стоимость активов по текущему курсу</p>
+    <div class="bucket-switch" id="bucketSwitch">
+      <button data-bucket="holding" class="bucket-btn active">📦 Холд</button>
+      <button data-bucket="trading" class="bucket-btn">⚡ Трейдинг</button>
+    </div>
     <div id="portfolioContent"></div>
   </section>
 
@@ -630,6 +708,8 @@ const COLOR = {
 let STATE = {
   lang: 'ru',
   currency: 'usd',
+  theme: 'dark',
+  portfolioBucket: 'holding',
   isPremium: false,
   premiumDaysLeft: 0,
   coins: [],
@@ -885,13 +965,13 @@ async function renderPortfolio(){
   const el = document.getElementById('portfolioContent');
   el.innerHTML = '<div class="spinner"></div>';
   try{
-    const data = await api('/api/portfolio');
+    const data = await api('/api/portfolio?bucket='+STATE.portfolioBucket);
     STATE.portfolio = data.items;
     if (!data.items.length){
       el.innerHTML = `
         <div class="empty-state">
           <div class="big-icon">${ICONS.empty}</div>
-          <p>Портфель пуст. Добавь монету, чтобы отслеживать её стоимость.</p>
+          <p>Эта корзина пуста. Добавь монету, чтобы отслеживать её стоимость.</p>
         </div>`;
       return;
     }
@@ -1051,16 +1131,38 @@ async function renderPremium(){
     return;
   }
 
+  let plans = {month: {price: 4, days: 30}, year: {price: 30, days: 365, savings_percent: 38}};
+  try{ plans = await api('/api/premium/plans'); }catch(e){}
+  let selectedPlan = 'month';
+
   el.innerHTML = `
     <div class="premium-hero">
       <div class="gem">${ICONS.check}</div>
-      <div class="price">$4 <span>/ месяц</span></div>
+      <div class="price" id="premiumPriceDisplay">$${plans.month.price} <span>/ месяц</span></div>
+    </div>
+    <div class="plan-switch" id="planSwitch">
+      <button data-plan="month" class="plan-btn active">Месяц</button>
+      <button data-plan="year" class="plan-btn">Год <span class="save-badge">-${plans.year.savings_percent}%</span></button>
     </div>
     ${featureList}
     <button class="btn-primary" id="buyPremiumBtn">Оформить Premium</button>
     <div id="referralCard"></div>
   `;
-  document.getElementById('buyPremiumBtn').addEventListener('click', buyPremium);
+
+  const priceEl = document.getElementById('premiumPriceDisplay');
+  document.querySelectorAll('.plan-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      selectedPlan = btn.dataset.plan;
+      document.querySelectorAll('.plan-btn').forEach(b=>b.classList.toggle('active', b===btn));
+      const p = plans[selectedPlan];
+      priceEl.innerHTML = selectedPlan === 'month'
+        ? `$${p.price} <span>/ месяц</span>`
+        : `$${p.price} <span>/ год</span>`;
+      tg?.HapticFeedback?.selectionChanged();
+    });
+  });
+
+  document.getElementById('buyPremiumBtn').addEventListener('click', ()=>buyPremium(selectedPlan));
   renderReferralCard();
 }
 
@@ -1088,9 +1190,9 @@ async function renderReferralCard(){
   }catch(e){ /* тихо игнорируем, если не удалось получить ссылку */ }
 }
 
-async function buyPremium(){
+async function buyPremium(plan){
   try{
-    const data = await api('/api/premium/create-invoice', {method:'POST'});
+    const data = await api('/api/premium/create-invoice', {method:'POST', body: JSON.stringify({plan})});
     if (tg?.openLink) tg.openLink(data.invoice_url); else window.open(data.invoice_url, '_blank');
     const el = document.getElementById('premiumContent');
     el.insertAdjacentHTML('beforeend', `
@@ -1102,6 +1204,7 @@ async function buyPremium(){
         const res = await api('/api/premium/check/'+pid, {method:'POST'});
         if (res.confirmed){
           STATE.isPremium = true;
+          STATE.premiumDaysLeft = res.days;
           showToast('Premium активирован 🎉');
           tg?.HapticFeedback?.notificationOccurred('success');
           renderPremium();
@@ -1132,15 +1235,27 @@ function closeSheet(){
 document.getElementById('sheetBackdrop').addEventListener('click', closeSheet);
 
 function openAddPortfolioSheet(){
-  let selected = null;
+  let selected = null, bucket = STATE.portfolioBucket;
   openSheet(`
     <h3>Добавить монету в портфель</h3>
+    <span class="field-label">Корзина</span>
+    <div class="chip-row">
+      <button class="chip ${bucket==='holding'?'selected':''}" data-bucket="holding">📦 Холд</button>
+      <button class="chip ${bucket==='trading'?'selected':''}" data-bucket="trading">⚡ Трейдинг</button>
+    </div>
     <span class="field-label">Монета</span>
     <div class="chip-row" id="sheetCoinChips"></div>
     <span class="field-label">Количество</span>
     <input class="text-input" id="sheetAmount" inputmode="decimal" placeholder="0.00">
     <button class="btn-primary" id="sheetSubmit">Добавить</button>
   `);
+  document.querySelectorAll('[data-bucket]').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      bucket = chip.dataset.bucket;
+      document.querySelectorAll('[data-bucket]').forEach(c=>c.classList.remove('selected'));
+      chip.classList.add('selected');
+    });
+  });
   const chipsWrap = document.getElementById('sheetCoinChips');
   chipsWrap.innerHTML = STATE.coins.map(sym=>`<button class="chip" data-c="${sym}">${STATE.coinDisplay[sym]||sym}</button>`).join('');
   chipsWrap.querySelectorAll('.chip').forEach(chip=>{
@@ -1155,9 +1270,13 @@ function openAddPortfolioSheet(){
     if (!selected){ showToast('Выбери монету'); return; }
     if (!amount || amount <= 0){ showToast('Введи количество'); return; }
     try{
-      await api('/api/portfolio', {method:'POST', body:JSON.stringify({coin:selected, amount})});
+      await api('/api/portfolio', {method:'POST', body:JSON.stringify({coin:selected, amount, bucket})});
       closeSheet();
       tg?.HapticFeedback?.notificationOccurred('success');
+      if (bucket !== STATE.portfolioBucket){
+        STATE.portfolioBucket = bucket;
+        document.querySelectorAll('#bucketSwitch .bucket-btn').forEach(b=>b.classList.toggle('active', b.dataset.bucket===bucket));
+      }
       renderPortfolio();
     }catch(e){
       showToast(e.message);
@@ -1188,6 +1307,7 @@ function openAddAlertSheet(){
     <div id="percentKindFields" style="display:none;">
       <span class="field-label">Изменение, %</span>
       <input class="text-input" id="sheetPercent" inputmode="decimal" placeholder="5">
+      <div id="percentSuggestHint" class="suggest-hint"></div>
       <span class="field-label">В какую сторону</span>
       <div class="toggle-row">
         <button class="toggle-btn" data-dir="above">📈 Рост</button>
@@ -1203,8 +1323,22 @@ function openAddAlertSheet(){
       selected = chip.dataset.c;
       chipsWrap.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
       chip.classList.add('selected');
+      if (kind === 'percent') updatePercentSuggestion(selected);
     });
   });
+  async function updatePercentSuggestion(coin){
+    const hint = document.getElementById('percentSuggestHint');
+    hint.innerHTML = `<div class="spinner" style="width:16px;height:16px;margin:6px 0;"></div>`;
+    try{
+      const data = await api('/api/alerts/suggest?coin='+coin);
+      hint.innerHTML = `💡 Обычно двигается на ~${data.suggested_percent}% в день —
+        <button class="suggest-use-btn" id="useSuggestBtn">использовать</button>`;
+      document.getElementById('useSuggestBtn').addEventListener('click', ()=>{
+        document.getElementById('sheetPercent').value = data.suggested_percent;
+        tg?.HapticFeedback?.impactOccurred('light');
+      });
+    }catch(e){ hint.innerHTML = ''; }
+  }
   document.querySelectorAll('[data-kind]').forEach(chip=>{
     chip.addEventListener('click', ()=>{
       kind = chip.dataset.kind;
@@ -1214,6 +1348,7 @@ function openAddAlertSheet(){
       document.getElementById('percentKindFields').style.display = kind === 'percent' ? '' : 'none';
       direction = null;
       document.querySelectorAll('[data-dir]').forEach(b=>b.classList.remove('selected','above','below'));
+      if (kind === 'percent' && selected) updatePercentSuggestion(selected);
     });
   });
   document.querySelectorAll('[data-dir]').forEach(btn=>{
@@ -1297,6 +1432,7 @@ async function init(){
     const initData = await api('/api/init');
     STATE.lang = initData.lang;
     STATE.currency = initData.currency || 'usd';
+    STATE.theme = initData.theme || 'dark';
     STATE.isPremium = initData.is_premium;
     STATE.premiumDaysLeft = initData.premium_days_left;
     STATE.coins = initData.coins;
@@ -1316,6 +1452,8 @@ async function init(){
     updateAlertsBadge(initData.unseen_alerts || 0);
 
     initCurrencySwitch();
+    initBucketSwitch();
+    initThemeToggle();
 
     const watchlistData = await api('/api/watchlist');
     STATE.watchlist = new Set(watchlistData.items.map(i=>i.coin));
@@ -1340,6 +1478,43 @@ async function init(){
   }catch(e){
     document.getElementById('marketList').innerHTML = `<div class="empty-state"><p>Не получилось загрузить данные. Перезайди в приложение через бота.</p></div>`;
   }
+}
+
+// ─── Тема (светлая/тёмная) ───
+function applyTheme(theme){
+  if (theme === 'light'){
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('themeIconMoon').style.display = 'none';
+    document.getElementById('themeIconSun').style.display = '';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    document.getElementById('themeIconMoon').style.display = '';
+    document.getElementById('themeIconSun').style.display = 'none';
+  }
+}
+
+function initThemeToggle(){
+  applyTheme(STATE.theme);
+  document.getElementById('themeToggleBtn').addEventListener('click', async ()=>{
+    STATE.theme = STATE.theme === 'light' ? 'dark' : 'light';
+    applyTheme(STATE.theme);
+    tg?.HapticFeedback?.selectionChanged();
+    try{ await api('/api/theme', {method:'POST', body:JSON.stringify({theme:STATE.theme})}); }catch(e){}
+  });
+}
+
+// ─── Переключатель корзин портфеля ───
+function initBucketSwitch(){
+  const wrap = document.getElementById('bucketSwitch');
+  wrap.querySelectorAll('.bucket-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if (btn.dataset.bucket === STATE.portfolioBucket) return;
+      STATE.portfolioBucket = btn.dataset.bucket;
+      wrap.querySelectorAll('.bucket-btn').forEach(b=>b.classList.toggle('active', b===btn));
+      tg?.HapticFeedback?.selectionChanged();
+      renderPortfolio();
+    });
+  });
 }
 
 // ─── Переключатель валюты ───
